@@ -5,6 +5,8 @@ pub struct Reader {
   priv chars : Array[Char]
   priv limits : Limits
   priv mut pos : Int32
+  priv mut nodes : Int32
+  priv mut failed : Bool
 }
 
 ///|
@@ -14,7 +16,7 @@ pub fn Reader::new(
 ) -> Reader raise EdnError {
   limits.validate()
   guard source.length() <= limits.input else { raise Limit("input units") }
-  { chars: source.to_array(), limits, pos: 0, }
+  { chars: source.to_array(), limits, pos: 0, nodes: 0, failed: false, }
 }
 
 ///|

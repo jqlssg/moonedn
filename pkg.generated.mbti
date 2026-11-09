@@ -10,6 +10,10 @@ pub fn parse_atom(String) -> Value raise EdnError
 
 pub fn parse_number(String) -> Value raise EdnError
 
+pub fn read(String, limits? : Limits) -> Value raise EdnError
+
+pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
+
 pub fn valid_symbol(String) -> Bool
 
 pub fn valid_tag(String) -> Bool
@@ -41,6 +45,7 @@ pub fn Reader::location(Self, Int32) -> (Int32, Int32) raise EdnError
 pub fn Reader::new(String, limits? : Limits) -> Self raise EdnError
 pub fn Reader::next_token(Self) -> SpannedToken? raise EdnError
 pub fn Reader::offset(Self) -> Int32
+pub fn Reader::read_next(Self) -> Value? raise EdnError
 pub fn Reader::source_length(Self) -> Int32
 
 pub(all) struct SpannedToken {
