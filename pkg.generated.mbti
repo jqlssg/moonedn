@@ -8,6 +8,8 @@ pub fn decimal_key(String) -> String raise EdnError
 
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
 
+pub fn from_tagged_json(Json, limits? : Limits) -> Value raise EdnError
+
 pub fn instant_key(String) -> (Int64, String) raise EdnError
 
 pub fn parse_atom(String) -> Value raise EdnError
@@ -19,6 +21,8 @@ pub fn pretty(Value, layout? : Layout, limits? : Limits) -> String raise EdnErro
 pub fn read(String, limits? : Limits) -> Value raise EdnError
 
 pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
+
+pub fn to_tagged_json(Value, limits? : Limits) -> Json raise EdnError
 
 pub fn uuid_key(String) -> String raise EdnError
 
