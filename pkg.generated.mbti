@@ -8,11 +8,15 @@ pub fn contains_path(Value, Array[Segment], limits? : Limits) -> Bool raise EdnE
 
 pub fn decimal_key(String) -> String raise EdnError
 
+pub fn diagnose(String, EdnError, context? : Int32) -> Diagnostic raise EdnError
+
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
 
 pub fn from_plain_json(Json, limits? : Limits) -> Value raise EdnError
 
 pub fn from_tagged_json(Json, limits? : Limits) -> Value raise EdnError
+
+pub fn inspect_value(Value, limits? : Limits) -> Statistics raise EdnError
 
 pub fn instant_key(String) -> (Int64, String) raise EdnError
 
@@ -59,6 +63,14 @@ pub(all) suberror EdnError {
 }
 
 // Types and methods
+pub(all) struct Diagnostic {
+  message : String
+  offset : Int32?
+  line : Int32?
+  column : Int32?
+  excerpt : String
+}
+
 pub(all) enum Edit {
   Replace(Array[Segment], Value)
   Put(Array[Segment], Value, Value)
@@ -104,6 +116,16 @@ pub(all) struct SpannedToken {
   token : Token
   start : Int32
   end : Int32
+}
+
+pub(all) struct Statistics {
+  nodes : Int32
+  max_depth : Int32
+  text_units : Int32
+  collections : Int32
+  map_entries : Int32
+  tagged : Int32
+  kinds : Map[String, Int32]
 }
 
 pub(all) enum Token {
