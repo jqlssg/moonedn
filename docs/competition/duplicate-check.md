@@ -39,3 +39,7 @@ GitHub search/repositories 和 search/code 均 per_page=100；精确 EDN/clojure
 3. 开发者工具：含复杂键/集合的数据→诊断、排版、遍历统计→可读文件与确定性报告；验证 map/set 次序无关、list/vector 序列相等、边界错误和资源限制。
 
 最小完整核心：EDN 值模型、解析器、打印器、结构工具、可逆 JSON 及三个可运行集成。明确不做 Clojure 求值/宏、数据库客户端、网络传输、Cirru 或通用 schema。不是以行数或提交数代替功能价值。只有已记录范围内未发现成熟的标准 EDN 直接替代；不声称全球唯一或官方通过。发布前再次反查。
+
+## 发布前复核（2026-11-09）
+
+以 `moon search` 对 edn、clojure、data notation 各取最多 100 项，并对 GitHub 仓库检索 `edn language:MoonBit`、`"EDN" "MoonBit"` 与 `"tagged JSON" language:MoonBit`，复核结果仍以 Cirru/cirru-edn.mbt 为最接近项目，其语法与值契约差异如上。检索项可能命中 README 或描述中的无关用语，已经逐项按主要能力判断。复核是有界公开查询，不能证明未索引、私有或未来项目不存在。
