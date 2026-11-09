@@ -34,6 +34,8 @@ pub fn to_plain_json(Value, keyword_keys? : Bool, limits? : Limits) -> Json rais
 
 pub fn to_tagged_json(Value, limits? : Limits) -> Json raise EdnError
 
+pub fn transact(Value, Array[Edit], limits? : Limits) -> Value raise EdnError
+
 pub fn uuid_key(String) -> String raise EdnError
 
 pub fn valid_symbol(String) -> Bool
@@ -53,6 +55,14 @@ pub(all) suberror EdnError {
 }
 
 // Types and methods
+pub(all) enum Edit {
+  Replace(Array[Segment], Value)
+  Put(Array[Segment], Value, Value)
+  Insert(Array[Segment], Int32, Value)
+  Remove(Array[Segment])
+  Check(Array[Segment], Value)
+}
+
 pub(all) struct Layout {
   width : Int32
   indent : Int32
