@@ -4,6 +4,8 @@ package "jqlssg/moonedn"
 // Values
 pub fn clone_value(Value, limits? : Limits) -> Value raise EdnError
 
+pub fn contains_path(Value, Array[Segment], limits? : Limits) -> Bool raise EdnError
+
 pub fn decimal_key(String) -> String raise EdnError
 
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
@@ -14,6 +16,8 @@ pub fn from_tagged_json(Json, limits? : Limits) -> Value raise EdnError
 
 pub fn instant_key(String) -> (Int64, String) raise EdnError
 
+pub fn lookup(Value, Array[Segment], limits? : Limits) -> Value? raise EdnError
+
 pub fn parse_atom(String) -> Value raise EdnError
 
 pub fn parse_number(String) -> Value raise EdnError
@@ -23,6 +27,8 @@ pub fn pretty(Value, layout? : Layout, limits? : Limits) -> String raise EdnErro
 pub fn read(String, limits? : Limits) -> Value raise EdnError
 
 pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
+
+pub fn require_at(Value, Array[Segment], limits? : Limits) -> Value raise EdnError
 
 pub fn to_plain_json(Value, keyword_keys? : Bool, limits? : Limits) -> Json raise EdnError
 
@@ -74,6 +80,12 @@ pub fn Reader::offset(Self) -> Int32
 pub fn Reader::read_next(Self) -> Value? raise EdnError
 pub fn Reader::source_length(Self) -> Int32
 
+pub(all) enum Segment {
+  Index(Int32)
+  Key(Value)
+  TaggedValue
+}
+
 pub(all) struct SpannedToken {
   token : Token
   start : Int32
@@ -111,5 +123,6 @@ pub(all) enum Value {
 pub fn Value::kind(Self) -> String
 
 // Type aliases
+pub type Path = Array[Segment]
 
 // Traits
