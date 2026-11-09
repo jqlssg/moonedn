@@ -20,7 +20,11 @@ fn Reader::parse_token(
       let _ = self.required(work, depth + 1)
       self.required(work, depth + 1)
     }
-    Tag(name) => Tagged(name, self.required(work, depth + 1))
+    Tag(name) => {
+      let value = self.required(work, depth + 1)
+      validate_tag(name, value)
+      Tagged(name, value)
+    }
     Open(c) => self.collection(c, work, depth)
     SetOpen => self.collection('#', work, depth)
   }

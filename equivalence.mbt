@@ -97,7 +97,16 @@ fn equal_inner(
       }
       true
     }
-    (Tagged(x, v), Tagged(y, w)) => x == y && equal_inner(v, w, work, depth + 1)
+    (Tagged(x, v), Tagged(y, w)) => {
+      if x != y {
+        return false
+      }
+      match (x, v, w) {
+        ("inst", Text(s), Text(t)) => instant_key(s) == instant_key(t)
+        ("uuid", Text(s), Text(t)) => uuid_key(s) == uuid_key(t)
+        _ => equal_inner(v, w, work, depth + 1)
+      }
+    }
     _ => false
   }
 }

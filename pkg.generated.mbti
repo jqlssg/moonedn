@@ -6,6 +6,8 @@ pub fn decimal_key(String) -> String raise EdnError
 
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
 
+pub fn instant_key(String) -> (Int64, String) raise EdnError
+
 pub fn parse_atom(String) -> Value raise EdnError
 
 pub fn parse_number(String) -> Value raise EdnError
@@ -13,6 +15,8 @@ pub fn parse_number(String) -> Value raise EdnError
 pub fn read(String, limits? : Limits) -> Value raise EdnError
 
 pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
+
+pub fn uuid_key(String) -> String raise EdnError
 
 pub fn valid_symbol(String) -> Bool
 
