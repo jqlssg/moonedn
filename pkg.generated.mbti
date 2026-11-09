@@ -14,6 +14,8 @@ pub fn parse_atom(String) -> Value raise EdnError
 
 pub fn parse_number(String) -> Value raise EdnError
 
+pub fn pretty(Value, layout? : Layout, limits? : Limits) -> String raise EdnError
+
 pub fn read(String, limits? : Limits) -> Value raise EdnError
 
 pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
@@ -37,6 +39,12 @@ pub(all) suberror EdnError {
 }
 
 // Types and methods
+pub(all) struct Layout {
+  width : Int32
+  indent : Int32
+}
+pub fn Layout::default() -> Self
+
 pub(all) struct Limits {
   input : Int32
   depth : Int32
