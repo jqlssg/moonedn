@@ -30,11 +30,15 @@ pub fn read_all(String, limits? : Limits) -> Array[Value] raise EdnError
 
 pub fn require_at(Value, Array[Segment], limits? : Limits) -> Value raise EdnError
 
+pub fn resolve_tag(Value, String, (Value) -> Value raise EdnError, limits? : Limits) -> Value raise EdnError
+
 pub fn to_plain_json(Value, keyword_keys? : Bool, limits? : Limits) -> Json raise EdnError
 
 pub fn to_tagged_json(Value, limits? : Limits) -> Json raise EdnError
 
 pub fn transact(Value, Array[Edit], limits? : Limits) -> Value raise EdnError
+
+pub fn transform(Value, (Value) -> Value raise EdnError, limits? : Limits) -> Value raise EdnError
 
 pub fn uuid_key(String) -> String raise EdnError
 
