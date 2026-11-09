@@ -1,0 +1,46 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "jqlssg/moonedn"
+
+// Values
+
+// Errors
+pub(all) suberror EdnError {
+  Syntax(Int32, String)
+  Limit(String)
+  Invalid(String)
+  PathError(String)
+}
+
+// Types and methods
+pub(all) struct Limits {
+  input : Int32
+  depth : Int32
+  nodes : Int32
+  token : Int32
+  container : Int32
+}
+pub fn Limits::default() -> Self
+pub fn Limits::validate(Self) -> Unit raise EdnError
+
+pub(all) enum Value {
+  Nil
+  Bool(Bool)
+  Integer(String)
+  BigInteger(String)
+  Float(Double)
+  Decimal(String)
+  Text(String)
+  Character(Char)
+  Symbol(String)
+  Keyword(String)
+  List(Array[Value])
+  Vector(Array[Value])
+  Mapping(Array[(Value, Value)])
+  Set(Array[Value])
+  Tagged(String, Value)
+}
+pub fn Value::kind(Self) -> String
+
+// Type aliases
+
+// Traits
