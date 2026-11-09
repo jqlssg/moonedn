@@ -1,0 +1,18 @@
+MoonEDN contains original MoonBit implementation code, copyright 2026 jqlssg.
+The project code is provided under the MIT License in LICENSE.
+
+Design reference: EDN specification, https://github.com/edn-format/edn .
+No specification text or implementation source has been copied into the library.
+
+Independent testing reference: edn_format 0.7.5 by swaroopch and contributors,
+https://github.com/swaroopch/edn_format , licensed under Apache License 2.0.
+It is installed separately for test generation and is not vendored or linked
+into the MoonBit runtime module. Differential inputs and the generator are
+original project test code, not copied upstream fixtures.
+
+MoonBit standard library is used through the toolchain. Its own license and
+copyright remain with the MoonBit contributors.
+
+Cirru/cirru-edn.mbt and other ecosystem repositories were inspected solely for
+capability comparison. No source, assets or tests from those projects are
+included in this project.
