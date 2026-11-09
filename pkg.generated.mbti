@@ -26,6 +26,8 @@ pub fn valid_tag(String) -> Bool
 
 pub fn validate_value(Value, limits? : Limits) -> Unit raise EdnError
 
+pub fn write(Value, canonical? : Bool, limits? : Limits) -> String raise EdnError
+
 // Errors
 pub(all) suberror EdnError {
   Syntax(Int32, String)
