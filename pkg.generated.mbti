@@ -2,6 +2,9 @@
 package "jqlssg/moonedn"
 
 // Values
+pub fn decimal_key(String) -> String raise EdnError
+
+pub fn parse_number(String) -> Value raise EdnError
 
 // Errors
 pub(all) suberror EdnError {
