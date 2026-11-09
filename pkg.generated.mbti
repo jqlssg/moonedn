@@ -4,7 +4,13 @@ package "jqlssg/moonedn"
 // Values
 pub fn decimal_key(String) -> String raise EdnError
 
+pub fn parse_atom(String) -> Value raise EdnError
+
 pub fn parse_number(String) -> Value raise EdnError
+
+pub fn valid_symbol(String) -> Bool
+
+pub fn valid_tag(String) -> Bool
 
 // Errors
 pub(all) suberror EdnError {
