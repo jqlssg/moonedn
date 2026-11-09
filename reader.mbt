@@ -4,7 +4,7 @@
 pub struct Reader {
   priv chars : Array[Char]
   priv limits : Limits
-  priv pos : Int32
+  priv mut pos : Int32
 }
 
 ///|
