@@ -31,6 +31,15 @@ pub(all) struct Limits {
 pub fn Limits::default() -> Self
 pub fn Limits::validate(Self) -> Unit raise EdnError
 
+pub struct Reader {
+  // private fields
+}
+pub fn Reader::budgets(Self) -> Limits
+pub fn Reader::location(Self, Int32) -> (Int32, Int32) raise EdnError
+pub fn Reader::new(String, limits? : Limits) -> Self raise EdnError
+pub fn Reader::offset(Self) -> Int32
+pub fn Reader::source_length(Self) -> Int32
+
 pub(all) enum Value {
   Nil
   Bool(Bool)
