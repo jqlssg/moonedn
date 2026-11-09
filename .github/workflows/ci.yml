@@ -11,15 +11,16 @@ jobs:
       fail-fast: false
       matrix:
         target: [wasm-gc, wasm, js, native]
-    env:
-      MOON_HOME: ${{ runner.temp }}/moonbit-0.10.16
-      MOON_TOOLCHAIN_ROOT: ${{ runner.temp }}/moonbit-0.10.16
     steps:
       - uses: actions/checkout@v4
       - name: Install pinned official MoonBit toolchain
         shell: bash
         run: |
           set -euo pipefail
+          export MOON_HOME="$RUNNER_TEMP/moonbit-0.10.16"
+          export MOON_TOOLCHAIN_ROOT="$MOON_HOME"
+          echo "MOON_HOME=$MOON_HOME" >> "$GITHUB_ENV"
+          echo "MOON_TOOLCHAIN_ROOT=$MOON_TOOLCHAIN_ROOT" >> "$GITHUB_ENV"
           mkdir -p "$MOON_HOME/lib"
           curl --fail --location --retry 3 'https://cli.moonbitlang.com/binaries/0.10.16%2Bb1a0e846e/moonbit-linux-x86_64.tar.gz' -o "$RUNNER_TEMP/moonbit.tar.gz"
           curl --fail --location --retry 3 'https://cli.moonbitlang.com/cores/core-0.10.16%2Bb1a0e846e.tar.gz' -o "$RUNNER_TEMP/core.tar.gz"
