@@ -3,10 +3,10 @@ fn check_text(text : String, work : Work) -> Unit raise EdnError {
   guard text.length() <= work.limits.token else {
     raise Limit("value text length")
   }
-  work.units += text.length()
-  guard work.units <= work.limits.input else {
+  guard text.length() <= work.limits.input - work.units else {
     raise Limit("aggregate text units")
   }
+  work.units += text.length()
 }
 
 ///|
@@ -17,7 +17,14 @@ fn clone_inner(
 ) -> Value raise EdnError {
   work.tick(depth)
   match value {
-    Nil | Bool(_) | Character(_) => value
+    Nil | Bool(_) => value
+    Character(c) => {
+      let n = c.to_int()
+      guard n >= 0 && n <= 0x10FFFF && (n < 0xD800 || n > 0xDFFF) else {
+        raise Invalid("character must be a Unicode scalar")
+      }
+      value
+    }
     Float(x) => {
       guard !x.is_inf() && !x.is_nan() else {
         raise Invalid("non-finite float")

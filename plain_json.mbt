@@ -10,7 +10,12 @@ fn plain_encode(
     Nil => Json::null()
     Bool(x) => Json::boolean(x)
     Text(x) => Json::string(x)
-    Float(x) => Json::number(x)
+    Float(x) => {
+      guard x >= -9007199254740991.0 && x <= 9007199254740991.0 else {
+        raise Invalid("float outside interoperable JSON range")
+      }
+      Json::number(x)
+    }
     Integer(x) => {
       let n = @string.parse_int64(x) catch { _ => raise Invalid("integer") }
       guard n >= -9007199254740991L && n <= 9007199254740991L else {

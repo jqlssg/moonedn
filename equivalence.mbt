@@ -14,8 +14,8 @@ fn Work::new(limits : Limits) -> Work raise EdnError {
 ///|
 fn Work::tick(self : Work, depth : Int32) -> Unit raise EdnError {
   guard depth <= self.limits.depth else { raise Limit("operation depth") }
+  guard self.visited < self.limits.nodes else { raise Limit("operation work") }
   self.visited += 1
-  guard self.visited <= self.limits.nodes else { raise Limit("operation work") }
 }
 
 ///|
@@ -121,5 +121,7 @@ pub fn equivalent(
   b : Value,
   limits~ : Limits = Limits::default(),
 ) -> Bool raise EdnError {
+  validate_value(a, limits~)
+  validate_value(b, limits~)
   equal_inner(a, b, Work::new(limits), 0)
 }
