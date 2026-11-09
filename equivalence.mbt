@@ -2,12 +2,13 @@
 priv struct Work {
   limits : Limits
   mut visited : Int32
+  mut units : Int32
 }
 
 ///|
 fn Work::new(limits : Limits) -> Work raise EdnError {
   limits.validate()
-  { limits, visited: 0, }
+  { limits, visited: 0, units: 0, }
 }
 
 ///|

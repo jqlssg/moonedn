@@ -62,7 +62,9 @@ pub fn parse_atom(text : String) -> Value raise EdnError {
   }
   if xs[0] == ':' {
     let name = chars_slice(xs, 1, xs.length())
-    guard valid_symbol(name) else { raise Invalid("invalid keyword") }
+    guard name != "/" && valid_symbol(name) else {
+      raise Invalid("invalid keyword")
+    }
     return Keyword(name)
   }
   guard valid_symbol(text) else { raise Invalid("invalid symbol") }

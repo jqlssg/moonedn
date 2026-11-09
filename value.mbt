@@ -50,7 +50,8 @@ pub fn Limits::validate(limits : Limits) -> Unit raise EdnError {
     limits.depth > 256 ||
     limits.nodes < 1 ||
     limits.token < 1 ||
-    limits.container < 0 {
+    limits.container < 0 ||
+    limits.container > 1000000000 {
     raise Invalid("invalid budgets; depth must be in 1..256")
   }
 }

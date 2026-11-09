@@ -2,6 +2,8 @@
 package "jqlssg/moonedn"
 
 // Values
+pub fn clone_value(Value, limits? : Limits) -> Value raise EdnError
+
 pub fn decimal_key(String) -> String raise EdnError
 
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
@@ -21,6 +23,8 @@ pub fn uuid_key(String) -> String raise EdnError
 pub fn valid_symbol(String) -> Bool
 
 pub fn valid_tag(String) -> Bool
+
+pub fn validate_value(Value, limits? : Limits) -> Unit raise EdnError
 
 // Errors
 pub(all) suberror EdnError {
