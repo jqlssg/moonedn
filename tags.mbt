@@ -21,8 +21,53 @@ fn leap_year(year : Int32) -> Bool {
 }
 
 ///|
-/// Validates the supported RFC3339 profile and returns exact epoch seconds plus
-/// a fractional digit string. Leap seconds and unknown -00:00 offsets are rejected.
+// UTC transitions from IERS Bulletin C 72 (July 2026), Leap_Second.dat.
+// A positive event inserts :60 immediately before this ordinary UTC second.
+// Keep changes and the independent IERS comparison in tools in sync.
+fn utc_leap_adjustment(boundary : Int64) -> Int32 {
+  let transitions : Array[(Int64, Int32)] = [
+    (78796800L, 1),
+    (94694400L, 1),
+    (126230400L, 1),
+    (157766400L, 1),
+    (189302400L, 1),
+    (220924800L, 1),
+    (252460800L, 1),
+    (283996800L, 1),
+    (315532800L, 1),
+    (362793600L, 1),
+    (394329600L, 1),
+    (425865600L, 1),
+    (489024000L, 1),
+    (567993600L, 1),
+    (631152000L, 1),
+    (662688000L, 1),
+    (709948800L, 1),
+    (741484800L, 1),
+    (773020800L, 1),
+    (820454400L, 1),
+    (867715200L, 1),
+    (915148800L, 1),
+    (1136073600L, 1),
+    (1230768000L, 1),
+    (1341100800L, 1),
+    (1435708800L, 1),
+    (1483228800L, 1),
+  ]
+  for event in transitions {
+    if event.0 == boundary {
+      return event.1
+    }
+  }
+  0
+}
+
+///|
+/// Exact equality key for RFC3339 timestamps, not an elapsed-time API.
+/// Ordinary seconds retain their POSIX second and trimmed fractional digits.
+/// A leap second uses the preceding POSIX second and "leap:" + fraction, so it
+/// never aliases either adjacent ordinary second. The original tagged string
+/// retains offset metadata, including the unknown-local-offset marker -00:00.
 pub fn instant_key(text : String) -> (Int64, String) raise EdnError {
   let xs = text.to_array()
   guard xs.length() >= 20 && xs.length() <= 65536 else {
@@ -41,13 +86,8 @@ pub fn instant_key(text : String) -> (Int64, String) raise EdnError {
   let hour = decimal_digits(xs, 11, 13)
   let minute = decimal_digits(xs, 14, 16)
   let second = decimal_digits(xs, 17, 19)
-  guard year >= 1 &&
-    month >= 1 &&
-    month <= 12 &&
-    hour < 24 &&
-    minute < 60 &&
-    second < 60 else {
-    raise Invalid("instant field range; leap seconds unsupported")
+  guard month >= 1 && month <= 12 && hour < 24 && minute < 60 && second <= 60 else {
+    raise Invalid("instant field range")
   }
   let month_days = [
     31,
@@ -98,20 +138,49 @@ pub fn instant_key(text : String) -> (Int64, String) raise EdnError {
     let h = decimal_digits(xs, pos + 1, pos + 3)
     let m = decimal_digits(xs, pos + 4, pos + 6)
     guard h < 24 && m < 60 else { raise Invalid("timezone range") }
-    guard xs[pos] != '-' || h != 0 || m != 0 else {
-      raise Invalid("unknown local offset -00:00 unsupported")
-    }
     (h * 60 + m) * (if xs[pos] == '-' { -1 } else { 1 })
   }
-  let y = year - 1
-  let mut days = y * 365 + y / 4 - y / 100 + y / 400
+  // Count days from 0000-01-01 with nonnegative divisions (year 0000 is leap).
+  let mut days = year * 365 +
+    (year + 3) / 4 -
+    (year + 99) / 100 +
+    (year + 399) / 400
   for i in 0..<(month - 1) {
     days += month_days[i]
   }
   days += day - 1
-  let seconds = (days - 719162).to_int64() * 86400L +
-    (hour * 3600 + minute * 60 + second - offset * 60).to_int64()
-  (seconds, fraction)
+  let seconds = (days - 719528).to_int64() * 86400L +
+    (hour * 3600 +
+    minute * 60 +
+    (if second == 60 { 59 } else { second }) -
+    offset * 60).to_int64()
+  adjusted_instant_key(
+    seconds,
+    fraction,
+    second,
+    utc_leap_adjustment(seconds + 1L),
+  )
+}
+
+///|
+// Kept separate so negative-leap rules can be tested without inventing a UTC event.
+fn adjusted_instant_key(
+  seconds : Int64,
+  fraction : String,
+  second : Int32,
+  adjustment : Int32,
+) -> (Int64, String) raise EdnError {
+  if second == 60 {
+    guard adjustment == 1 else {
+      raise Invalid("second 60 requires an announced UTC leap second")
+    }
+    (seconds, "leap:" + fraction)
+  } else {
+    guard second != 59 || adjustment != -1 else {
+      raise Invalid("second omitted by a negative UTC leap second")
+    }
+    (seconds, fraction)
+  }
 }
 
 ///|

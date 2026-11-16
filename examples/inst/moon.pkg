@@ -1,0 +1,5 @@
+import {
+  "jqlssg/moonedn" @edn,
+}
+
+pkgtype(kind: "executable")

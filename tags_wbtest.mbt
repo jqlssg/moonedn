@@ -20,7 +20,6 @@ test "exact built-in tag semantics" {
   for
     s in [
       "#uuid 1", "#uuid \"no\"", "#inst \"2023-02-29T00:00:00Z\"", "#inst \"2000-01-01T00:00:60Z\"",
-      "#inst \"2000-01-01T00:00:00-00:00\"",
     ] {
     let bad = try {
       let _ = read(s)

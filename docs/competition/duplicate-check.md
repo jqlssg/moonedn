@@ -43,3 +43,7 @@ GitHub search/repositories 和 search/code 均 per_page=100；精确 EDN/clojure
 ## 发布前复核（2026-11-09）
 
 以 `moon search` 对 edn、clojure、data notation 各取最多 100 项，并对 GitHub 仓库检索 `edn language:MoonBit`、`"EDN" "MoonBit"` 与 `"tagged JSON" language:MoonBit`，复核结果仍以 Cirru/cirru-edn.mbt 为最接近项目，其语法与值契约差异如上。检索项可能命中 README 或描述中的无关用语，已经逐项按主要能力判断。复核是有界公开查询，不能证明未索引、私有或未来项目不存在。
+
+## 时间兼容修复前复核（2026-11-16）
+
+本次保持原标准 EDN 选题与公共契约。再次查询 MoonCakes `edn`（最多 50 项）与 GitHub `edn language:MoonBit`（最多 50 项），仍以本项目与 Cirru EDN 为相关结果；Cirru 的不同语法和值契约如上。没有发现本次记录范围内新增的成熟直接替代，未对未索引或私有项目作不存在结论。原始输出保存在仓库外本轮验收证据目录。

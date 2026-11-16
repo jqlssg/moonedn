@@ -2,7 +2,7 @@
 
 MoonEDN 是一个用 MoonBit 实现的 EDN 值读写与结构工具库，用于配置文件、Clojure/Datomic 系统之间的数据交换，以及编辑器和开发工具中的格式化、查询与修改。
 
-模块：`jqlssg/moonedn@0.1.0`。核心不依赖第三方包，不访问文件、网络或环境变量。格式依据是 [edn-format/edn](https://github.com/edn-format/edn)，实际兼容边界见下文；它不执行 Clojure 代码。
+模块：`jqlssg/moonedn@0.1.1`。核心不依赖第三方包，不访问文件、网络或环境变量。格式依据是 [edn-format/edn](https://github.com/edn-format/edn)，实际兼容边界见下文；它不执行 Clojure 代码。
 
 ## 用户与完整工作流
 
@@ -14,13 +14,13 @@ MoonEDN 是一个用 MoonBit 实现的 EDN 值读写与结构工具库，用于�
 
 ## 安装与环境
 
-要求 `moonc >= 0.10.16`。本版固定验证工具链为 `moonc v0.10.16+b1a0e846e`、`moon 0.1.20261016`。四种目标为 `wasm-gc`、`wasm`、`js` 和 `native`；JS 运行需要 Node.js，native 需要 C 编译器。默认目标是 wasm-gc。CI 在 Linux 上分别检查、构建、测试和运行三个示例。
+要求 `moonc >= 0.10.16`。本版固定验证工具链为 `moonc v0.10.16+b1a0e846e`、`moon 0.1.20261016`。四种目标为 `wasm-gc`、`wasm`、`js` 和 `native`；JS 运行需要 Node.js，native 需要 C 编译器。默认目标是 wasm-gc。CI 在 Linux 上分别检查、构建、测试和运行四个示例。
 
 在已有 MoonBit 工程的 `moon.mod` 中加入精确依赖：
 
 ```moonbit
 import {
-  "jqlssg/moonedn@0.1.0",
+  "jqlssg/moonedn@0.1.1",
 }
 ```
 
@@ -63,9 +63,10 @@ moon test --deny-warn
 moon run examples/config --deny-warn
 moon run examples/interchange --deny-warn
 moon run examples/tooling --deny-warn
+moon run examples/inst --deny-warn
 ```
 
-换目标时添加 `--target wasm`、`--target js` 或 `--target native`。三个示例的输入均为自有内存数据，含结果断言，无外部服务依赖。
+换目标时添加 `--target wasm`、`--target js` 或 `--target native`。四个示例的输入均为自有内存数据，含结果断言，无外部服务依赖。
 
 ## 核心 API
 
@@ -144,11 +145,24 @@ let next = @edn.transact(config, [
 
 ## 兼容范围与非目标
 
-支持 EDN 基础值、注释、逗号空白、discard、未知 tag 的结构保存，以及字符串 Unicode 转义和代理对。`#uuid` 校验 36 字符形式并按小写规范值比较。`#inst` 使用完整 RFC3339 日期时间，支持精确任意长度小数秒和时区归一化；年份范围 0001..9999，拒绝闰秒和未知偏移 `-00:00`，不支持日期缩写。它不会把不同时间瞬间仅按字符串比较。
+支持 EDN 基础值、注释、逗号空白、discard、未知 tag 的结构保存，以及字符串 Unicode 转义和代理对。`#uuid` 校验 36 字符形式并按小写规范值比较。`#inst` 以 EDN 引用的 RFC 3339 为兼容目标，支持四位年份 `0000..9999`、公历日期、大小写 `T/Z`、数值偏移、`-00:00`、资源限额内的任意精度小数秒及已公告的闰秒。时间等价按归一化后的 UTC 时间戳判断；闰秒保留独立身份，不折叠到相邻普通秒。读写和 tagged JSON 保留原始字符串及偏移元信息；`-00:00` 表示本地偏移未知、UTC 已知，因此可与同一 `Z` 时间戳相等。标准要求的完整日期、时间及偏移均不可省略；不把 ISO 8601 日期缩写或完整 Clojure reader 扩展当作 EDN 必需行为。详见 [标准时间值兼容说明](docs/inst-compatibility.md)。
 
 非 ASCII 名称采用非空白、非控制的宽松字符策略，未实现 Unicode 字母类别表；tag 首字符在 ASCII 范围必须为字母，非 ASCII 范围排除数字。它不是符号的 Unicode 类别规范校验器。浮点数按 binary64 舍入，拒绝非有限值，可能发生下溢；不支持 NaN/Infinity 数值扩展。
 
 不支持 Clojure 宏、求值、ratio、十六进制/基数整数、namespaced maps、自动解析关键词、regex、quote、对象身份/引用、schema、格式注释保留或领域 tag 的自动含义。未知 tag 使用结构等价，领域等价需应用先显式规范化。
+
+## 标准时间值示例
+
+```moonbit
+let utc = @edn.read("#inst \"1990-12-31T23:59:60Z\"")
+let shifted = @edn.read("#inst \"1990-12-31T15:59:60-08:00\"")
+assert_true(@edn.equivalent(utc, shifted))
+assert_false(@edn.equivalent(utc, @edn.read("#inst \"1991-01-01T00:00:00Z\"")))
+```
+
+完整可运行入口为 `moon run examples/inst`。`instant_key` 是等价键，不是时间间隔或 TAI/POSIX 转换 API：普通秒维持 `(POSIX秒, 去尾零小数)`；闰秒使用 `(前一普通秒的POSIX秒, "leap:" + 去尾零小数)`，避免与前后普通秒碰撞。调用方应比较完整键，不应仅取第一个字段作时间算术。
+
+闰秒表来自 IERS Bulletin C 72（2026 年 7 月），包含截至该公告的全部 27 次正闰秒；表到期日为 2027 年 6 月 28 日。解析无联网副作用，未公告的未来 `:60` 不猜测放行；普通未来时间不受此表期限限制。后续 IERS 公告如新增或删除闰秒，需要按兼容说明更新事件表并运行官方数据核对与回归。这是标准公告数据的维护要求，并非排除闰秒支持。
 
 ## 测试与复现
 
@@ -161,13 +175,14 @@ moon build --deny-warn
 moon test --deny-warn
 ```
 
-测试包含标准合法/畸形输入、Unicode、精度与时区、复杂键/重复元素、reader 失败状态、全部资源预算、JSON 碰撞、脱离输入的事务/变换，以及三个真实工作流。另有 200 个由独立 `edn_format 0.7.5` 得出的比较样本和 2,000 组生成树往返；这不代表已经证明所有 EDN 实现行为相同。
+当前共 32 组测试。测试包含标准合法/畸形输入、Unicode、精度与时区、复杂键/重复元素、reader 失败状态、全部资源预算、JSON 碰撞、脱离输入的事务/变换，以及三个真实工作流。新增 435 个独立时间预期（全部 27 个 IERS 闰秒 × 5 种偏移，以及 Python `datetime` 生成的 300 个普通公历时间），并有 200 个由独立 `edn_format 0.7.5` 得出的比较样本和 2,000 组生成树往返；这不代表已经证明所有 EDN 实现行为相同。
 
 独立参考样本由自有生成器产生，不复制上游测试：
 
 ```sh
 python -m pip install -r tools/requirements-oracle.txt
 python tools/generate_differential.py --check
+python tools/generate_inst_vectors.py --check
 ```
 
 生成器需要固定工具链的 `moon` 在 PATH 中；不传 `--check` 会重新生成测试文件。核心测试不需要 Python。CI 用四目标矩阵执行检查、构建、测试和全部示例，并在 wasm-gc job 中重新核对独立样本。

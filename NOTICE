@@ -16,3 +16,10 @@ copyright remain with the MoonBit contributors.
 Cirru/cirru-edn.mbt and other ecosystem repositories were inspected solely for
 capability comparison. No source, assets or tests from those projects are
 included in this project.
+
+Time format reference: RFC 3339, https://www.rfc-editor.org/rfc/rfc3339 .
+Leap event facts: IERS Bulletin C 72 (July 2026),
+https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat .
+Only UTC event instants and adjustment signs are stored; no bulletin text or
+third-party implementation/tests are copied. Calendar/offset vectors are
+original project code using Python's standard library for independent epochs.
