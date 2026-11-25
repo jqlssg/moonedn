@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "jqlssg/moonedn"
 
+import {
+  "moonbitlang/core/json",
+}
+
 // Values
 pub fn clone_value(Value, limits? : Limits) -> Value raise EdnError
 
@@ -12,9 +16,9 @@ pub fn diagnose(String, EdnError, context? : Int32) -> Diagnostic raise EdnError
 
 pub fn equivalent(Value, Value, limits? : Limits) -> Bool raise EdnError
 
-pub fn from_plain_json(Json, limits? : Limits) -> Value raise EdnError
+pub fn from_plain_json(@json.Json, limits? : Limits) -> Value raise EdnError
 
-pub fn from_tagged_json(Json, limits? : Limits) -> Value raise EdnError
+pub fn from_tagged_json(@json.Json, limits? : Limits) -> Value raise EdnError
 
 pub fn inspect_value(Value, limits? : Limits) -> Statistics raise EdnError
 
@@ -36,9 +40,9 @@ pub fn require_at(Value, Array[Segment], limits? : Limits) -> Value raise EdnErr
 
 pub fn resolve_tag(Value, String, (Value) -> Value raise EdnError, limits? : Limits) -> Value raise EdnError
 
-pub fn to_plain_json(Value, keyword_keys? : Bool, limits? : Limits) -> Json raise EdnError
+pub fn to_plain_json(Value, keyword_keys? : Bool, limits? : Limits) -> @json.Json raise EdnError
 
-pub fn to_tagged_json(Value, limits? : Limits) -> Json raise EdnError
+pub fn to_tagged_json(Value, limits? : Limits) -> @json.Json raise EdnError
 
 pub fn transact(Value, Array[Edit], limits? : Limits) -> Value raise EdnError
 

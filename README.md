@@ -2,7 +2,7 @@
 
 MoonEDN 是一个用 MoonBit 实现的 EDN 值读写与结构工具库，用于配置文件、Clojure/Datomic 系统之间的数据交换，以及编辑器和开发工具中的格式化、查询与修改。
 
-模块：`jqlssg/moonedn@0.1.1`。核心不依赖第三方包，不访问文件、网络或环境变量。格式依据是 [edn-format/edn](https://github.com/edn-format/edn)，实际兼容边界见下文；它不执行 Clojure 代码。
+模块：`jqlssg/moonedn@0.1.2`。核心不依赖第三方包，不访问文件、网络或环境变量。格式依据是 [edn-format/edn](https://github.com/edn-format/edn)，实际兼容边界见下文；它不执行 Clojure 代码。
 
 ## 用户与完整工作流
 
@@ -14,13 +14,13 @@ MoonEDN 是一个用 MoonBit 实现的 EDN 值读写与结构工具库，用于�
 
 ## 安装与环境
 
-要求 `moonc >= 0.10.16`。本版固定验证工具链为 `moonc v0.10.16+b1a0e846e`、`moon 0.1.20261016`。四种目标为 `wasm-gc`、`wasm`、`js` 和 `native`；JS 运行需要 Node.js，native 需要 C 编译器。默认目标是 wasm-gc。CI 在 Linux 上分别检查、构建、测试和运行四个示例。
+要求 `moonc >= 0.10.16`。本版固定验证工具链为 `moonc v0.10.22+124d61d05`、`moon 0.1.20261119`。四种目标为 `wasm-gc`、`wasm`、`js` 和 `native`；JS 运行需要 Node.js，native 需要 C 编译器。默认目标是 wasm-gc。CI 在 Linux 上分别检查、构建、测试和运行四个示例。
 
 在已有 MoonBit 工程的 `moon.mod` 中加入精确依赖：
 
 ```moonbit
 import {
-  "jqlssg/moonedn@0.1.1",
+  "jqlssg/moonedn@0.1.2",
 }
 ```
 
